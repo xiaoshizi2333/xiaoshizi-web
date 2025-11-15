@@ -3,35 +3,733 @@
 <head>
     <title>🍚 美团免单查询</title>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
-        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; }
-        input, button { padding: 12px; margin: 5px; border: 1px solid #ddd; border-radius: 5px; }
-        input { width: 70%; }
-        button { background: #07c160; color: white; border: none; cursor: pointer; }
-        button:disabled { background: #ccc; }
-        .result { margin: 20px 0; padding: 15px; border-radius: 5px; }
-        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-        .record { padding: 10px; margin: 5px 0; background: #f8f9fa; border-radius: 5px; border-left: 4px solid #07c160; }
-        .loading { color: #666; }
+        * { box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            margin: 0; 
+            padding: 20px 15px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container { 
+            max-width: 100%;
+            background: white; 
+            padding: 20px; 
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin: 0 auto;
+            position: relative;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            position: relative;
+        }
+        .header-buttons {
+            position: absolute;
+            left: 0;
+            top: 0;
+            display: flex;
+            gap: 8px;
+        }
+        .add-btn, .delete-btn {
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .delete-btn {
+            background: #dc3545;
+        }
+        .header h1 {
+            color: #07c160;
+            font-size: 24px;
+            margin: 0 0 8px 0;
+            font-weight: 600;
+        }
+        .header p {
+            color: #666;
+            font-size: 14px;
+            margin: 0;
+            opacity: 0.8;
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        input { 
+            width: 100%; 
+            padding: 16px; 
+            border: 2px solid #e1e5e9; 
+            border-radius: 12px;
+            font-size: 16px;
+            margin-bottom: 12px;
+            background: #f8f9fa;
+            transition: all 0.3s ease;
+        }
+        input:focus {
+            outline: none;
+            border-color: #07c160;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(7, 193, 96, 0.1);
+        }
+        button { 
+            width: 100%;
+            padding: 18px; 
+            background: linear-gradient(135deg, #07c160, #05a84f);
+            color: white; 
+            border: none; 
+            border-radius: 12px;
+            cursor: pointer; 
+            font-size: 18px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(7, 193, 96, 0.3);
+            margin-bottom: 10px;
+        }
+        button:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 8px rgba(7, 193, 96, 0.3);
+        }
+        button:disabled { 
+            background: #ccc;
+            box-shadow: none;
+            transform: none;
+            cursor: not-allowed;
+        }
+        .quick-btn {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            padding: 12px;
+            font-size: 16px;
+            margin: 5px;
+            width: auto;
+            flex: 1;
+            min-width: 0;
+        }
+        .batch-btn {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            margin-top: 15px;
+        }
+        .quick-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 15px 0;
+        }
+        .result { 
+            margin: 20px 0; 
+            padding: 16px; 
+            border-radius: 12px;
+            font-size: 15px;
+            text-align: center;
+            font-weight: 500;
+        }
+        .success { 
+            background: #e8f5e8; 
+            color: #2e7d32; 
+            border: 1px solid #c8e6c9;
+        }
+        .error { 
+            background: #ffebee; 
+            color: #c62828; 
+            border: 1px solid #ffcdd2;
+        }
+        .loading { 
+            background: #e3f2fd; 
+            color: #1565c0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .loading::after {
+            content: "";
+            width: 20px;
+            height: 20px;
+            border: 2px solid #1565c0;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .records-container {
+            margin-top: 25px;
+        }
+        .records-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .records-header h3 {
+            margin: 0;
+            color: #333;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .record-count {
+            background: #07c160;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .record { 
+            padding: 16px; 
+            margin: 10px 0; 
+            background: white;
+            border-radius: 12px;
+            border-left: 5px solid #07c160;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .record-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .amount {
+            font-size: 20px;
+            font-weight: 700;
+            color: #e74c3c;
+        }
+        .status {
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .status-paid {
+            background: #e8f5e8;
+            color: #07c160;
+        }
+        .status-unpaid {
+            background: #fff3e0;
+            color: #ff9800;
+        }
+        .record-time {
+            color: #666;
+            font-size: 14px;
+        }
+        .stats {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            margin-top: 15px;
+            text-align: center;
+        }
+        .stats div {
+            margin: 5px 0;
+            font-size: 15px;
+        }
+        .stats .total-amount {
+            font-size: 20px;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+        }
+        .empty-state .icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+        .tip {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-size: 13px;
+            text-align: center;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .modal-buttons button {
+            flex: 1;
+            margin: 0;
+        }
+        .cancel-btn {
+            background: #6c757d;
+        }
+        .delete-confirm-btn {
+            background: #dc3545;
+        }
+        .account-records {
+            margin-top: 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 15px;
+        }
+        .account-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .account-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 16px;
+        }
+        .account-stats {
+            display: flex;
+            gap: 15px;
+            font-size: 14px;
+            color: #666;
+        }
+        .batch-progress {
+            margin: 10px 0;
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+        }
+        .records-scroll {
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 10px 0;
+            padding-right: 5px;
+        }
+        .records-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .records-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+        .records-scroll::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+        .records-scroll::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+        .account-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin: 15px 0;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 10px;
+        }
+        .account-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid #f8f9fa;
+        }
+        .account-item:last-child {
+            border-bottom: none;
+        }
+        .account-item input[type="checkbox"] {
+            margin-right: 12px;
+            width: 18px;
+            height: 18px;
+        }
+        .account-info {
+            flex: 1;
+        }
+        .account-item-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        .account-item-url {
+            font-size: 12px;
+            color: #666;
+            word-break: break-all;
+        }
+        .select-all {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+        .select-all input[type="checkbox"] {
+            margin-right: 10px;
+            width: 18px;
+            height: 18px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🍚 美团免单查询</h1>
-        <p>小柿子测试使用，仅为学习交流，禁止外传</p>
-        
-        <div>
-            <input type="text" id="urlInput" placeholder="小柿子专用">
-            <button onclick="queryOrders()" id="queryBtn">查询免单记录</button>
+        <div class="header">
+            <div class="header-buttons">
+                <button class="add-btn" onclick="showAddModal()">＋ 添加</button>
+                <button class="delete-btn" onclick="showDeleteModal()">－ 删除</button>
+            </div>
+            <h1>🍚 美团免单查询</h1>
+            <p>小柿子测试使用，仅为学习交流，禁止外传</p>
         </div>
         
+        <div class="tip">
+        
+        </div>
+        
+        <div class="input-group">
+            <input type="text" id="urlInput" placeholder="🔗 请粘贴美团免单页面URL">
+            <button onclick="queryOrders()" id="queryBtn">查询免单记录</button>
+        </div>
+
+        <!-- 快捷按钮区域 -->
+        <div class="quick-buttons" id="quickButtons">
+            <!-- 动态生成的快捷按钮 -->
+        </div>
+
+        <!-- 一键查询全部按钮 -->
+        <button class="batch-btn" onclick="batchQueryAll()" id="batchBtn">🚀 一键查询全部</button>
+        
         <div id="result"></div>
-        <div id="records"></div>
+        
+        <!-- 单个查询结果显示 -->
+        <div class="records-container">
+            <div id="records"></div>
+        </div>
+
+        <!-- 多账号结果显示 -->
+        <div id="batchResults"></div>
+    </div>
+
+    <!-- 添加URL的模态框 -->
+    <div class="modal" id="addModal">
+        <div class="modal-content">
+            <h3>添加免单链接</h3>
+            <input type="text" id="accountName" placeholder="账号名称（例如：小柿子）">
+            <input type="text" id="accountUrl" placeholder="美团免单页面URL">
+            <div class="modal-buttons">
+                <button class="cancel-btn" onclick="hideAddModal()">取消</button>
+                <button onclick="saveAccount()">保存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 删除账号的模态框 -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-content">
+            <h3>选择要删除的账号</h3>
+            <div class="select-all">
+                <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
+                <label for="selectAll">全选</label>
+            </div>
+            <div class="account-list" id="deleteAccountList">
+                <!-- 动态生成的账号列表 -->
+            </div>
+            <div class="modal-buttons">
+                <button class="cancel-btn" onclick="hideDeleteModal()">取消</button>
+                <button class="delete-confirm-btn" onclick="confirmDelete()">删除选中</button>
+            </div>
+        </div>
     </div>
 
     <script>
+        // 存储账号数据
+        let accounts = JSON.parse(localStorage.getItem('meituan_accounts') || '[]');
+        
+        // 初始化显示快捷按钮
+        updateQuickButtons();
+
+        function showAddModal() {
+            document.getElementById('addModal').style.display = 'flex';
+            document.getElementById('accountName').focus();
+        }
+
+        function hideAddModal() {
+            document.getElementById('addModal').style.display = 'none';
+            document.getElementById('accountName').value = '';
+            document.getElementById('accountUrl').value = '';
+        }
+
+        function showDeleteModal() {
+            if (accounts.length === 0) {
+                showResult('❌ 没有可删除的账号', 'error');
+                return;
+            }
+            updateDeleteAccountList();
+            document.getElementById('deleteModal').style.display = 'flex';
+        }
+
+        function hideDeleteModal() {
+            document.getElementById('deleteModal').style.display = 'none';
+            // 重置选择状态
+            document.getElementById('selectAll').checked = false;
+            const checkboxes = document.querySelectorAll('#deleteAccountList input[type="checkbox"]');
+            checkboxes.forEach(checkbox => checkbox.checked = false);
+        }
+
+        function updateDeleteAccountList() {
+            const container = document.getElementById('deleteAccountList');
+            container.innerHTML = '';
+            
+            accounts.forEach((account, index) => {
+                const item = document.createElement('div');
+                item.className = 'account-item';
+                item.innerHTML = `
+                    <input type="checkbox" id="account-${index}" value="${index}">
+                    <div class="account-info">
+                        <div class="account-item-name">${account.name}</div>
+                        <div class="account-item-url">${account.url}</div>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function toggleSelectAll() {
+            const selectAll = document.getElementById('selectAll').checked;
+            const checkboxes = document.querySelectorAll('#deleteAccountList input[type="checkbox"]');
+            checkboxes.forEach(checkbox => checkbox.checked = selectAll);
+        }
+
+        function confirmDelete() {
+            const checkboxes = document.querySelectorAll('#deleteAccountList input[type="checkbox"]:checked');
+            if (checkboxes.length === 0) {
+                alert('请选择要删除的账号');
+                return;
+            }
+
+            const indicesToDelete = Array.from(checkboxes).map(checkbox => parseInt(checkbox.value));
+            // 从大到小排序，避免删除时索引变化
+            indicesToDelete.sort((a, b) => b - a);
+            
+            const deletedNames = indicesToDelete.map(index => accounts[index].name);
+            
+            if (confirm(`确定要删除选中的 ${deletedNames.length} 个账号吗？`)) {
+                // 批量删除
+                indicesToDelete.forEach(index => {
+                    accounts.splice(index, 1);
+                });
+                
+                localStorage.setItem('meituan_accounts', JSON.stringify(accounts));
+                updateQuickButtons();
+                hideDeleteModal();
+                showResult(`✅ 已删除 ${deletedNames.length} 个账号`, 'success');
+            }
+        }
+
+        function saveAccount() {
+            const name = document.getElementById('accountName').value.trim();
+            const url = document.getElementById('accountUrl').value.trim();
+            
+            if (!name || !url) {
+                alert('请填写账号名称和URL');
+                return;
+            }
+
+            // 检查是否已存在相同名称
+            if (accounts.find(acc => acc.name === name)) {
+                alert('该账号名称已存在，请使用其他名称');
+                return;
+            }
+
+            // 添加到账号列表
+            accounts.push({ name, url });
+            localStorage.setItem('meituan_accounts', JSON.stringify(accounts));
+            
+            // 更新界面
+            updateQuickButtons();
+            hideAddModal();
+            showResult(`✅ 已保存账号: ${name}`, 'success');
+        }
+
+        function updateQuickButtons() {
+            const container = document.getElementById('quickButtons');
+            container.innerHTML = '';
+            
+            accounts.forEach((account, index) => {
+                const button = document.createElement('button');
+                button.className = 'quick-btn';
+                button.innerHTML = `👤 ${account.name}`;
+                button.onclick = () => quickQuery(account.url, account.name);
+                container.appendChild(button);
+            });
+        }
+
+        function quickQuery(url, name) {
+            document.getElementById('urlInput').value = url;
+            showResult(`🔍 正在查询 ${name}...`, 'loading');
+            queryOrders();
+        }
+
+        async function batchQueryAll() {
+            if (accounts.length === 0) {
+                showResult('❌ 请先添加账号', 'error');
+                return;
+            }
+
+            const batchBtn = document.getElementById('batchBtn');
+            batchBtn.disabled = true;
+            batchBtn.textContent = '批量查询中...';
+            
+            const resultsContainer = document.getElementById('batchResults');
+            resultsContainer.innerHTML = '<div class="batch-progress">开始批量查询...</div>';
+            
+            let completed = 0;
+            const total = accounts.length;
+            
+            // 清空单个查询结果
+            document.getElementById('records').innerHTML = '';
+            document.getElementById('result').innerHTML = '';
+            
+            for (let i = 0; i < accounts.length; i++) {
+                const account = accounts[i];
+                const progress = `(${completed + 1}/${total})`;
+                
+                const progressDiv = resultsContainer.querySelector('.batch-progress');
+                if (progressDiv) {
+                    progressDiv.textContent = `查询进度: ${progress} - ${account.name}`;
+                }
+                
+                try {
+                    const urlParams = parseUrlParams(account.url);
+                    const params = generateParams(urlParams);
+                    const response = await sendRequest(params);
+                    
+                    // 显示单个账号结果
+                    displayAccountResults(account.name, response.records, resultsContainer);
+                    completed++;
+                    
+                } catch (error) {
+                    // 显示错误结果
+                    displayAccountError(account.name, error.message, resultsContainer);
+                    completed++;
+                }
+                
+                // 更新进度
+                const progressDivUpdate = resultsContainer.querySelector('.batch-progress');
+                if (progressDivUpdate) {
+                    progressDivUpdate.textContent = `查询进度: ${completed}/${total} - 已完成`;
+                }
+            }
+            
+            // 完成批量查询
+            batchBtn.disabled = false;
+            batchBtn.textContent = '🚀 一键查询全部';
+            
+            const progressDivFinal = resultsContainer.querySelector('.batch-progress');
+            if (progressDivFinal) {
+                progressDivFinal.textContent = `✅ 批量查询完成 (${completed}/${total} 个账号)`;
+                progressDivFinal.style.background = '#e8f5e8';
+                progressDivFinal.style.color = '#2e7d32';
+            }
+        }
+
+        function displayAccountResults(accountName, records, container) {
+            const accountDiv = document.createElement('div');
+            accountDiv.className = 'account-records';
+            
+            let totalAmount = 0;
+            let unpaidCount = 0;
+            
+            records.forEach(record => {
+                totalAmount += (record.awardPrice || 0) / 100;
+                if (record.status !== 2) unpaidCount++;
+            });
+            
+            accountDiv.innerHTML = `
+                <div class="account-header">
+                    <div class="account-name">👤 ${accountName}</div>
+                    <div class="account-stats">
+                        <span>${records.length}条</span>
+                        <span>¥${totalAmount.toFixed(2)}</span>
+                    </div>
+                </div>
+                ${records.length === 0 ? 
+                    '<div class="empty-state"><div class="icon">📭</div><div>未找到免单记录</div></div>' :
+                    `
+                    <div class="records-scroll">
+                        ${records.map(record => {
+                            const amount = (record.awardPrice || 0) / 100;
+                            const timestamp = (record.ctime || 0) / 1000;
+                            const date = new Date(timestamp * 1000);
+                            const status = record.status === 2 ? '已打款' : '未打款';
+                            const dateStr = `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+                            
+                            return `
+                                <div class="record">
+                                    <div class="record-header">
+                                        <div class="amount">¥${amount.toFixed(2)}</div>
+                                        <div class="status status-${status === '已打款' ? 'paid' : 'unpaid'}">${status}</div>
+                                    </div>
+                                    <div class="record-time">${dateStr}</div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                    `
+                }
+                ${records.length > 0 ? `
+                    <div class="stats">
+                        <div>💰 总金额</div>
+                        <div class="total-amount">¥${totalAmount.toFixed(2)}</div>
+                        <div>⏳ 待打款: ${unpaidCount}笔</div>
+                    </div>
+                ` : ''}
+            `;
+            
+            container.appendChild(accountDiv);
+        }
+
+        function displayAccountError(accountName, error, container) {
+            const accountDiv = document.createElement('div');
+            accountDiv.className = 'account-records';
+            accountDiv.innerHTML = `
+                <div class="account-header">
+                    <div class="account-name">👤 ${accountName}</div>
+                    <div class="account-stats" style="color: #dc3545;">查询失败</div>
+                </div>
+                <div class="result error">❌ ${error}</div>
+            `;
+            container.appendChild(accountDiv);
+        }
+
+        // 原有的查询函数保持不变
         async function queryOrders() {
             const url = document.getElementById('urlInput').value;
             const btn = document.getElementById('queryBtn');
@@ -39,7 +737,7 @@
             const recordsDiv = document.getElementById('records');
             
             if (!url) {
-                showResult('请输入URL', 'error');
+                showResult('请输入美团免单页面URL', 'error');
                 return;
             }
 
@@ -49,13 +747,8 @@
             recordsDiv.innerHTML = '';
 
             try {
-                // 解析URL参数
                 const urlParams = parseUrlParams(url);
-                
-                // 生成20个参数
                 const params = generateParams(urlParams);
-                
-                // 发送请求
                 const response = await sendRequest(params);
                 
                 if (response.success) {
@@ -65,62 +758,106 @@
                     showResult(`❌ ${response.message}`, 'error');
                 }
             } catch (error) {
-                showResult(`❌ 请求失败: ${error}`, 'error');
+                showResult(`❌ 请求失败: ${error.message}`, 'error');
             } finally {
                 btn.disabled = false;
                 btn.textContent = '查询免单记录';
             }
         }
 
+        function displayRecords(records) {
+            const recordsDiv = document.getElementById('records');
+            
+            if (records.length === 0) {
+                recordsDiv.innerHTML = `
+                    <div class="empty-state">
+                        <div class="icon">📭</div>
+                        <div>未找到免单记录</div>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = `
+                <div class="records-header">
+                    <h3>📋 免单记录</h3>
+                    <div class="record-count">${records.length}条</div>
+                </div>
+                <div class="records-scroll">
+            `;
+            
+            records.sort((a, b) => (b.ctime || 0) - (a.ctime || 0));
+            
+            let totalAmount = 0;
+            let unpaidCount = 0;
+            
+            records.forEach((record) => {
+                const amount = (record.awardPrice || 0) / 100;
+                const timestamp = (record.ctime || 0) / 1000;
+                const date = new Date(timestamp * 1000);
+                const status = record.status === 2 ? '已打款' : '未打款';
+                
+                totalAmount += amount;
+                if (status === '未打款') unpaidCount++;
+                
+                const dateStr = `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+                
+                html += `
+                    <div class="record">
+                        <div class="record-header">
+                            <div class="amount">¥${amount.toFixed(2)}</div>
+                            <div class="status status-${status === '已打款' ? 'paid' : 'unpaid'}">${status}</div>
+                        </div>
+                        <div class="record-time">${dateStr}</div>
+                    </div>
+                `;
+            });
+
+            html += `</div>
+                <div class="stats">
+                    <div>💰 总金额</div>
+                    <div class="total-amount">¥${totalAmount.toFixed(2)}</div>
+                    <div>⏳ 待打款: ${unpaidCount}笔</div>
+                </div>
+            `;
+
+            recordsDiv.innerHTML = html;
+        }
+
+        function showResult(message, type) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = message;
+            resultDiv.className = `result ${type}`;
+        }
+
+        // 原有的解析URL、生成参数、发送请求等函数保持不变
         function parseUrlParams(url) {
             try {
                 const urlObj = new URL(url);
                 const params = new URLSearchParams(urlObj.search);
-                
                 const userid = params.get('userId') || params.get('userid') || '3305650384';
                 const token = params.get('token') || params.get('userToken');
-                
                 if (!token) throw new Error('无法从URL中解析出token');
-                
                 return { userid, token };
             } catch (e) {
-                throw new Error('URL解析失败: ' + e.message);
+                throw new Error('URL格式错误，请检查URL是否正确');
             }
         }
 
         function generateParams(urlParams) {
-            // 生成16个随机参数
             const dynamicParams = {
-                platform: '3',
-                version: '12.45.210',
-                wm_appversion: '12.45.210',
-                wm_ctype: 'mtandroid',
-                wm_dtype: 'RMX5010',
-                wm_did: generateUUID(),
-                
-                wm_visitid: generateUUID() + Date.now(),
-                wm_uuid: generateUUID(),
-                uuid: generateUUID(),
-                msid: generateUUID() + Date.now(),
-                
-                mt_back_rci: '410300',
-                wm_longitude: '112454000',
-                wm_latitude: '34619000',
-                
-                scene_id: '179',
-                page_num: '1',
-                page_size: '10',
+                platform: '3', version: '12.45.210', wm_appversion: '12.45.210',
+                wm_ctype: 'mtandroid', wm_dtype: 'RMX5010', wm_did: generateUUID(),
+                wm_visitid: generateUUID() + Date.now(), wm_uuid: generateUUID(),
+                uuid: generateUUID(), msid: generateUUID() + Date.now(),
+                mt_back_rci: '410300', wm_longitude: (112454000 + Math.floor(Math.random() * 10000)).toString(),
+                wm_latitude: (34619000 + Math.floor(Math.random() * 5000)).toString(),
+                scene_id: '179', page_num: '1', page_size: '10',
             };
-
-            // 合并20个参数
             return {
                 ...dynamicParams,
-                userid: urlParams.userid,
-                token: urlParams.token,
-                wm_logintoken: urlParams.token,
-                wm_context: '',
-                entry: 'tiantianmiandan',
-                entry_channel: '2',
+                userid: urlParams.userid, token: urlParams.token, wm_logintoken: urlParams.token,
+                wm_context: '', entry: 'tiantianmiandan', entry_channel: '2',
             };
         }
 
@@ -144,7 +881,9 @@
                     'Content-Type': 'application/x-www-form-urlencoded',
                     'Origin': 'https://adfec.meituan.com',
                     'Referer': 'https://adfec.meituan.com/',
-                    'User-Agent': 'Mozilla/5.0 (Linux; Android 13; RMX5010) AppleWebKit/537.36'
+                    'User-Agent': 'Mozilla/5.0 (Linux; Android 13; RMX5010) AppleWebKit/537.36',
+                    'Accept': 'application/json, text/plain, */*',
+                    'Accept-Language': 'zh-CN,zh-Hans;q=0.9'
                 },
                 body: formData
             });
@@ -163,7 +902,7 @@
             
             return {
                 success: true,
-                message: `成功找到${records.length}条记录`,
+                message: `成功找到${records.length}条免单记录`,
                 records: records
             };
         }
@@ -181,43 +920,15 @@
             return [];
         }
 
-        function showResult(message, type) {
-            const resultDiv = document.getElementById('result');
-            resultDiv.innerHTML = message;
-            resultDiv.className = `result ${type}`;
-        }
-
-        function displayRecords(records) {
-            const recordsDiv = document.getElementById('records');
-            
-            if (records.length === 0) {
-                recordsDiv.innerHTML = '<div class="result">📭 未找到免单记录</div>';
-                return;
+        // 按回车键也可以查询
+        document.getElementById('urlInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                queryOrders();
             }
+        });
 
-            let html = `<h3>📋 免单记录 (共${records.length}条)</h3>`;
-            
-            records.forEach((record, index) => {
-                const amount = (record.awardPrice || 0) / 100;
-                const timestamp = (record.ctime || 0) / 1000;
-                const date = new Date(timestamp * 1000);
-                const status = record.status === 2 ? '已打款' : '未打款';
-                const statusColor = status === '已打款' ? '#07c160' : '#ff6b35';
-                
-                html += `
-                    <div class="record">
-                        <strong>¥${amount.toFixed(2)}</strong> - 
-                        ${date.toLocaleString()} - 
-                        <span style="color: ${statusColor}">${status}</span>
-                    </div>
-                `;
-            });
-
-            recordsDiv.innerHTML = html;
-        }
-
-        // 示例URL
-        document.getElementById('urlInput').value = '';
+        // 自动聚焦输入框
+        document.getElementById('urlInput').focus();
     </script>
 </body>
 </html>
