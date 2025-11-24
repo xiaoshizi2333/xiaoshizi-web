@@ -1,263 +1,244 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-    <title>🍚 美团免单查询</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小柿子呕心沥血制作</title>
     <style>
-        * { box-sizing: border-box; }
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            margin: 0; 
-            padding: 20px 15px; 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            padding: 15px;
         }
-        .container { 
-            max-width: 100%;
-            background: white; 
-            padding: 20px; 
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        
+        .container {
+            max-width: 1200px;
             margin: 0 auto;
-            position: relative;
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 25px;
-            position: relative;
-        }
-        .header-buttons {
-            position: absolute;
-            left: 0;
-            top: 0;
-            display: flex;
-            gap: 8px;
-        }
-        .add-btn, .delete-btn {
-            background: #007bff;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 8px 16px;
-            font-size: 14px;
-            cursor: pointer;
-        }
-        .delete-btn {
-            background: #dc3545;
-        }
-        .header h1 {
-            color: #07c160;
-            font-size: 24px;
-            margin: 0 0 8px 0;
-            font-weight: 600;
-        }
-        .header p {
-            color: #666;
-            font-size: 14px;
-            margin: 0;
-            opacity: 0.8;
-        }
-        .input-group {
-            margin-bottom: 20px;
-        }
-        input { 
-            width: 100%; 
-            padding: 16px; 
-            border: 2px solid #e1e5e9; 
-            border-radius: 12px;
-            font-size: 16px;
-            margin-bottom: 12px;
-            background: #f8f9fa;
-            transition: all 0.3s ease;
-        }
-        input:focus {
-            outline: none;
-            border-color: #07c160;
             background: white;
-            box-shadow: 0 0 0 3px rgba(7, 193, 96, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
         }
-        button { 
-            width: 100%;
-            padding: 18px; 
-            background: linear-gradient(135deg, #07c160, #05a84f);
-            color: white; 
-            border: none; 
-            border-radius: 12px;
-            cursor: pointer; 
-            font-size: 18px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(7, 193, 96, 0.3);
+        
+        .header {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 1.8em;
             margin-bottom: 10px;
         }
-        button:active {
-            transform: translateY(2px);
-            box-shadow: 0 2px 8px rgba(7, 193, 96, 0.3);
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1em;
         }
-        button:disabled { 
-            background: #ccc;
-            box-shadow: none;
-            transform: none;
-            cursor: not-allowed;
+        
+        .input-section {
+            padding: 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
         }
-        .quick-btn {
-            background: linear-gradient(135deg, #007bff, #0056b3);
-            padding: 12px;
-            font-size: 16px;
-            margin: 5px;
-            width: auto;
-            flex: 1;
-            min-width: 0;
+        
+        .input-group {
+            margin-bottom: 15px;
         }
-        .batch-btn {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
-            margin-top: 15px;
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #495057;
         }
-        .quick-buttons {
+        
+        .input-row {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            margin: 15px 0;
-        }
-        .result { 
-            margin: 20px 0; 
-            padding: 16px; 
-            border-radius: 12px;
-            font-size: 15px;
-            text-align: center;
-            font-weight: 500;
-        }
-        .success { 
-            background: #e8f5e8; 
-            color: #2e7d32; 
-            border: 1px solid #c8e6c9;
-        }
-        .error { 
-            background: #ffebee; 
-            color: #c62828; 
-            border: 1px solid #ffcdd2;
-        }
-        .loading { 
-            background: #e3f2fd; 
-            color: #1565c0;
-            display: flex;
+            gap: 10px;
             align-items: center;
-            justify-content: center;
+        }
+        
+        .input-row input {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            white-space: nowrap;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-stop {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+        }
+        
+        .btn-clear {
+            background: #6c757d;
+        }
+        
+        .btn-delete {
+            background: #dc3545;
+        }
+        
+        .search-section {
+            padding: 15px 20px;
+            background: white;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .search-box {
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 12px 45px 12px 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 16px;
+        }
+        
+        .search-box::after {
+            content: '🔍';
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+        }
+        
+        .results-section {
+            padding: 20px;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #e3f2fd;
+            border-radius: 8px;
+            flex-wrap: wrap;
             gap: 10px;
         }
-        .loading::after {
-            content: "";
-            width: 20px;
-            height: 20px;
-            border: 2px solid #1565c0;
-            border-top: 2px solid transparent;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+        
+        .stat-item {
+            text-align: center;
+            flex: 1;
+            min-width: 100px;
         }
+        
+        .stat-number {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #1976d2;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .shop-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .shop-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            border-color: #667eea;
+        }
+        
+        .shop-name {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .shop-info {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        .records-container {
-            margin-top: 25px;
-        }
-        .records-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-        .records-header h3 {
-            margin: 0;
-            color: #333;
-            font-size: 18px;
-            font-weight: 600;
-        }
-        .record-count {
-            background: #07c160;
-            color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-        }
-        .record { 
-            padding: 16px; 
-            margin: 10px 0; 
-            background: white;
-            border-radius: 12px;
-            border-left: 5px solid #07c160;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-        .record-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-        .amount {
-            font-size: 20px;
-            font-weight: 700;
-            color: #e74c3c;
-        }
-        .status {
-            padding: 4px 12px;
-            border-radius: 15px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        .status-paid {
-            background: #e8f5e8;
-            color: #07c160;
-        }
-        .status-unpaid {
-            background: #fff3e0;
-            color: #ff9800;
-        }
-        .record-time {
-            color: #666;
-            font-size: 14px;
-        }
-        .stats {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 16px;
-            border-radius: 12px;
-            margin-top: 15px;
-            text-align: center;
-        }
-        .stats div {
-            margin: 5px 0;
-            font-size: 15px;
-        }
-        .stats .total-amount {
-            font-size: 20px;
-            font-weight: 700;
-            margin: 10px 0;
-        }
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-            color: #666;
-        }
-        .empty-state .icon {
-            font-size: 48px;
-            margin-bottom: 15px;
-            opacity: 0.5;
-        }
-        .tip {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            color: #856404;
-            padding: 12px;
-            border-radius: 8px;
-            margin: 15px 0;
-            font-size: 13px;
-            text-align: center;
-        }
+        
         .modal {
             display: none;
             position: fixed;
@@ -267,668 +248,807 @@
             height: 100%;
             background: rgba(0,0,0,0.5);
             z-index: 1000;
-            align-items: center;
-            justify-content: center;
+            padding: 15px;
         }
+        
         .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             background: white;
             padding: 20px;
             border-radius: 15px;
+            max-width: 500px;
             width: 90%;
-            max-width: 400px;
-            max-height: 80vh;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            max-height: 90vh;
             overflow-y: auto;
         }
-        .modal-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        .modal-buttons button {
-            flex: 1;
-            margin: 0;
-        }
-        .cancel-btn {
-            background: #6c757d;
-        }
-        .delete-confirm-btn {
-            background: #dc3545;
-        }
-        .account-records {
-            margin-top: 20px;
-            border: 2px solid #e9ecef;
-            border-radius: 12px;
-            padding: 15px;
-        }
-        .account-header {
+        
+        .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #e9ecef;
         }
-        .account-name {
+        
+        .modal-title {
+            font-size: 1.3em;
             font-weight: 600;
             color: #333;
-            font-size: 16px;
         }
-        .account-stats {
-            display: flex;
-            gap: 15px;
-            font-size: 14px;
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
             color: #666;
         }
-        .batch-progress {
-            margin: 10px 0;
+        
+        .link-box {
             background: #f8f9fa;
-            border-radius: 10px;
-            padding: 10px;
-            text-align: center;
-            font-size: 14px;
-            color: #666;
-        }
-        .records-scroll {
-            max-height: 300px;
-            overflow-y: auto;
-            margin: 10px 0;
-            padding-right: 5px;
-        }
-        .records-scroll::-webkit-scrollbar {
-            width: 6px;
-        }
-        .records-scroll::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 3px;
-        }
-        .records-scroll::-webkit-scrollbar-thumb {
-            background: #c1c1c1;
-            border-radius: 3px;
-        }
-        .records-scroll::-webkit-scrollbar-thumb:hover {
-            background: #a8a8a8;
-        }
-        .account-list {
-            max-height: 300px;
-            overflow-y: auto;
+            padding: 15px;
+            border-radius: 8px;
             margin: 15px 0;
+            word-break: break-all;
+            font-family: monospace;
+            border: 1px solid #e9ecef;
+        }
+        
+        .copy-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            transition: background 0.3s;
+        }
+        
+        .copy-btn:hover {
+            background: #218838;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .progress {
+            margin: 15px 0;
+            background: #e9ecef;
+            border-radius: 10px;
+            height: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            transition: width 0.3s;
+        }
+        
+        .config-list {
+            max-height: 200px;
+            overflow-y: auto;
             border: 1px solid #e9ecef;
             border-radius: 8px;
-            padding: 10px;
+            margin: 10px 0;
         }
-        .account-item {
+        
+        .config-item {
+            padding: 10px 15px;
+            border-bottom: 1px solid #e9ecef;
+            cursor: pointer;
             display: flex;
+            justify-content: space-between;
             align-items: center;
-            padding: 12px;
-            border-bottom: 1px solid #f8f9fa;
         }
-        .account-item:last-child {
+        
+        .config-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .config-item:last-child {
             border-bottom: none;
         }
-        .account-item input[type="checkbox"] {
-            margin-right: 12px;
-            width: 18px;
-            height: 18px;
-        }
-        .account-info {
-            flex: 1;
-        }
-        .account-item-name {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 4px;
-        }
-        .account-item-url {
-            font-size: 12px;
-            color: #666;
-            word-break: break-all;
-        }
-        .select-all {
+        
+        .config-actions {
             display: flex;
-            align-items: center;
-            padding: 10px;
-            background: #f8f9fa;
-            border-radius: 6px;
-            margin-bottom: 10px;
+            gap: 5px;
         }
-        .select-all input[type="checkbox"] {
-            margin-right: 10px;
-            width: 18px;
-            height: 18px;
+        
+        .small-btn {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        
+        /* 移动端优化 */
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 1.5em;
+            }
+            
+            .input-section, .results-section {
+                padding: 15px;
+            }
+            
+            .btn {
+                padding: 10px 12px;
+                font-size: 13px;
+                margin-right: 5px;
+                margin-bottom: 5px;
+            }
+            
+            .shop-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .stat-item {
+                min-width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 1.3em;
+            }
+            
+            .input-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .input-row input {
+                min-width: 100%;
+            }
+            
+            .btn {
+                width: 100%;
+                margin-right: 0;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <div class="header-buttons">
-                <button class="add-btn" onclick="showAddModal()">＋ 添加</button>
-                <button class="delete-btn" onclick="showDeleteModal()">－ 删除</button>
+            <h1>🍔 小柿子专用解析网站</h1>
+            <p>仅用于学习交流，不可用于非法用途和外传</p>
+        </div>
+        
+        <div class="input-section">
+            <div class="input-group">
+                <label for="urlInput">🔗 美团URL（包含Token）</label>
+                <div class="input-row">
+                    <input type="text" id="urlInput" placeholder="粘贴包含token的URL，例如：https://i.meituan.com/...?token=xxx">
+                    <button class="btn" id="addConfigBtn">➕ 保存</button>
+                    <button class="btn" id="selectConfigBtn">📁 选择配置</button>
+                    <button class="btn btn-clear" id="clearUrlBtn">🗑️ 清除</button>
+                    <button class="btn btn-delete" id="deleteConfigBtn">❌ 删除配置</button>
+                </div>
             </div>
-            <h1>🍚 美团免单查询</h1>
-            <p>小柿子测试使用，仅为学习交流，禁止外传</p>
+            
+            <div class="input-group">
+                <label for="coordinateInput">📍 经纬度（格式：经度,纬度）</label>
+                <div class="input-row">
+                    <input type="text" id="coordinateInput" placeholder="例如：000.000000,000.000000">
+                    <button class="btn btn-clear" id="clearCoordinateBtn">🗑️ 清除</button>
+                </div>
+            </div>
+            
+            <div>
+                <button class="btn" id="startBtn">🚀 开始解析店铺</button>
+                <button class="btn btn-stop" id="stopBtn" disabled>⏹️ 停止解析</button>
+            </div>
+            
+            <div class="progress hidden" id="progressBar">
+                <div class="progress-bar" id="progressFill" style="width: 0%"></div>
+            </div>
         </div>
         
-        <div class="tip">
-        
+        <div class="search-section">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="搜索店铺名称...">
+            </div>
         </div>
         
-        <div class="input-group">
-            <input type="text" id="urlInput" placeholder="🔗 请粘贴美团免单页面URL">
-            <button onclick="queryOrders()" id="queryBtn">查询免单记录</button>
+        <div class="results-section">
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalShops">0</div>
+                    <div class="stat-label">总店铺数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="currentPage">0</div>
+                    <div class="stat-label">当前页码</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="foundPages">0</div>
+                    <div class="stat-label">已发现页数</div>
+                </div>
+            </div>
+            
+            <div id="resultsContainer">
+                <div class="loading hidden" id="loadingIndicator">
+                    <div class="spinner"></div>
+                    <p>正在解析店铺数据...</p>
+                    <p id="loadingStatus">正在查询第 0 页</p>
+                </div>
+                
+                <div id="shopList" class="shop-grid"></div>
+            </div>
         </div>
-
-        <!-- 快捷按钮区域 -->
-        <div class="quick-buttons" id="quickButtons">
-            <!-- 动态生成的快捷按钮 -->
-        </div>
-
-        <!-- 一键查询全部按钮 -->
-        <button class="batch-btn" onclick="batchQueryAll()" id="batchBtn">🚀 一键查询全部</button>
-        
-        <div id="result"></div>
-        
-        <!-- 单个查询结果显示 -->
-        <div class="records-container">
-            <div id="records"></div>
-        </div>
-
-        <!-- 多账号结果显示 -->
-        <div id="batchResults"></div>
     </div>
-
-    <!-- 添加URL的模态框 -->
-    <div class="modal" id="addModal">
+    
+    <!-- 链接模态框 -->
+    <div class="modal" id="linkModal">
         <div class="modal-content">
-            <h3>添加免单链接</h3>
-            <input type="text" id="accountName" placeholder="账号名称（例如：小柿子）">
-            <input type="text" id="accountUrl" placeholder="美团免单页面URL">
-            <div class="modal-buttons">
-                <button class="cancel-btn" onclick="hideAddModal()">取消</button>
-                <button onclick="saveAccount()">保存</button>
+            <div class="modal-header">
+                <div class="modal-title">🔗 店铺链接</div>
+                <button class="close-btn" id="closeModal">&times;</button>
             </div>
+            <div id="modalShopName" style="margin-bottom: 15px; font-weight: 600;"></div>
+            <div class="link-box" id="modalLink"></div>
+            <button class="copy-btn" id="copyLinkBtn">📋 复制链接</button>
         </div>
     </div>
-
-    <!-- 删除账号的模态框 -->
-    <div class="modal" id="deleteModal">
+    
+    <!-- 保存配置模态框 -->
+    <div class="modal" id="saveConfigModal">
         <div class="modal-content">
-            <h3>选择要删除的账号</h3>
-            <div class="select-all">
-                <input type="checkbox" id="selectAll" onchange="toggleSelectAll()">
-                <label for="selectAll">全选</label>
+            <div class="modal-header">
+                <div class="modal-title">💾 保存配置</div>
+                <button class="close-btn" id="closeSaveConfigModal">&times;</button>
             </div>
-            <div class="account-list" id="deleteAccountList">
-                <!-- 动态生成的账号列表 -->
+            <div class="input-group">
+                <label for="configName">配置名称</label>
+                <input type="text" id="configName" placeholder="输入配置名称">
             </div>
-            <div class="modal-buttons">
-                <button class="cancel-btn" onclick="hideDeleteModal()">取消</button>
-                <button class="delete-confirm-btn" onclick="confirmDelete()">删除选中</button>
+            <button class="btn" id="saveConfigConfirmBtn" style="width: 100%;">保存配置</button>
+        </div>
+    </div>
+    
+    <!-- 选择配置模态框 -->
+    <div class="modal" id="selectConfigModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">📁 选择配置</div>
+                <button class="close-btn" id="closeSelectConfigModal">&times;</button>
+            </div>
+            <div class="config-list" id="configList">
+                <!-- 配置列表会动态生成 -->
+            </div>
+            <button class="btn" id="useCustomConfigBtn" style="width: 100%; margin-top: 10px;">使用自定义输入</button>
+        </div>
+    </div>
+    
+    <!-- 删除配置模态框 -->
+    <div class="modal" id="deleteConfigModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">❌ 删除配置</div>
+                <button class="close-btn" id="closeDeleteConfigModal">&times;</button>
+            </div>
+            <div class="config-list" id="deleteConfigList">
+                <!-- 删除配置列表会动态生成 -->
             </div>
         </div>
     </div>
 
     <script>
-        // 存储账号数据
-        let accounts = JSON.parse(localStorage.getItem('meituan_accounts') || '[]');
-        
-        // 初始化显示快捷按钮
-        updateQuickButtons();
-
-        function showAddModal() {
-            document.getElementById('addModal').style.display = 'flex';
-            document.getElementById('accountName').focus();
-        }
-
-        function hideAddModal() {
-            document.getElementById('addModal').style.display = 'none';
-            document.getElementById('accountName').value = '';
-            document.getElementById('accountUrl').value = '';
-        }
-
-        function showDeleteModal() {
-            if (accounts.length === 0) {
-                showResult('❌ 没有可删除的账号', 'error');
-                return;
+        class MeituanParser {
+            constructor() {
+                this.allShops = [];
+                this.currentPage = 0;
+                this.foundPages = 0;
+                this.isLoading = false;
+                this.shouldStop = false;
+                this.savedConfigs = JSON.parse(localStorage.getItem('meituanConfigs') || '{}');
+                this.currentConfig = 'custom';
+                
+                this.initializeEventListeners();
+                this.updateDeleteConfigList();
             }
-            updateDeleteAccountList();
-            document.getElementById('deleteModal').style.display = 'flex';
-        }
-
-        function hideDeleteModal() {
-            document.getElementById('deleteModal').style.display = 'none';
-            // 重置选择状态
-            document.getElementById('selectAll').checked = false;
-            const checkboxes = document.querySelectorAll('#deleteAccountList input[type="checkbox"]');
-            checkboxes.forEach(checkbox => checkbox.checked = false);
-        }
-
-        function updateDeleteAccountList() {
-            const container = document.getElementById('deleteAccountList');
-            container.innerHTML = '';
             
-            accounts.forEach((account, index) => {
-                const item = document.createElement('div');
-                item.className = 'account-item';
-                item.innerHTML = `
-                    <input type="checkbox" id="account-${index}" value="${index}">
-                    <div class="account-info">
-                        <div class="account-item-name">${account.name}</div>
-                        <div class="account-item-url">${account.url}</div>
-                    </div>
-                `;
-                container.appendChild(item);
-            });
-        }
-
-        function toggleSelectAll() {
-            const selectAll = document.getElementById('selectAll').checked;
-            const checkboxes = document.querySelectorAll('#deleteAccountList input[type="checkbox"]');
-            checkboxes.forEach(checkbox => checkbox.checked = selectAll);
-        }
-
-        function confirmDelete() {
-            const checkboxes = document.querySelectorAll('#deleteAccountList input[type="checkbox"]:checked');
-            if (checkboxes.length === 0) {
-                alert('请选择要删除的账号');
-                return;
+            initializeEventListeners() {
+                document.getElementById('startBtn').addEventListener('click', () => this.startParsing());
+                document.getElementById('stopBtn').addEventListener('click', () => this.stopParsing());
+                document.getElementById('searchInput').addEventListener('input', (e) => this.filterShops(e.target.value));
+                document.getElementById('closeModal').addEventListener('click', () => this.closeModal());
+                document.getElementById('copyLinkBtn').addEventListener('click', () => this.copyLink());
+                
+                // 配置管理相关事件
+                document.getElementById('addConfigBtn').addEventListener('click', () => this.showSaveConfigModal());
+                document.getElementById('selectConfigBtn').addEventListener('click', () => this.showSelectConfigModal());
+                document.getElementById('clearUrlBtn').addEventListener('click', () => this.clearUrl());
+                document.getElementById('clearCoordinateBtn').addEventListener('click', () => this.clearCoordinate());
+                document.getElementById('deleteConfigBtn').addEventListener('click', () => this.showDeleteConfigModal());
+                
+                // 配置模态框事件
+                document.getElementById('closeSaveConfigModal').addEventListener('click', () => this.closeSaveConfigModal());
+                document.getElementById('saveConfigConfirmBtn').addEventListener('click', () => this.saveConfig());
+                document.getElementById('closeSelectConfigModal').addEventListener('click', () => this.closeSelectConfigModal());
+                document.getElementById('useCustomConfigBtn').addEventListener('click', () => this.useCustomConfig());
+                document.getElementById('closeDeleteConfigModal').addEventListener('click', () => this.closeDeleteConfigModal());
+                
+                // 关闭模态框点击背景
+                document.getElementById('linkModal').addEventListener('click', (e) => {
+                    if (e.target.id === 'linkModal') this.closeModal();
+                });
+                document.getElementById('saveConfigModal').addEventListener('click', (e) => {
+                    if (e.target.id === 'saveConfigModal') this.closeSaveConfigModal();
+                });
+                document.getElementById('selectConfigModal').addEventListener('click', (e) => {
+                    if (e.target.id === 'selectConfigModal') this.closeSelectConfigModal();
+                });
+                document.getElementById('deleteConfigModal').addEventListener('click', (e) => {
+                    if (e.target.id === 'deleteConfigModal') this.closeDeleteConfigModal();
+                });
             }
-
-            const indicesToDelete = Array.from(checkboxes).map(checkbox => parseInt(checkbox.value));
-            // 从大到小排序，避免删除时索引变化
-            indicesToDelete.sort((a, b) => b - a);
             
-            const deletedNames = indicesToDelete.map(index => accounts[index].name);
+            // 配置管理方法
+            showSaveConfigModal() {
+                const url = document.getElementById('urlInput').value.trim();
+                const coordinate = document.getElementById('coordinateInput').value.trim();
+                
+                if (!url || !coordinate) {
+                    alert('请先填写URL和经纬度');
+                    return;
+                }
+                
+                document.getElementById('configName').value = '';
+                document.getElementById('saveConfigModal').style.display = 'block';
+            }
             
-            if (confirm(`确定要删除选中的 ${deletedNames.length} 个账号吗？`)) {
-                // 批量删除
-                indicesToDelete.forEach(index => {
-                    accounts.splice(index, 1);
+            closeSaveConfigModal() {
+                document.getElementById('saveConfigModal').style.display = 'none';
+            }
+            
+            saveConfig() {
+                const name = document.getElementById('configName').value.trim();
+                const url = document.getElementById('urlInput').value.trim();
+                const coordinate = document.getElementById('coordinateInput').value.trim();
+                
+                if (!name) {
+                    alert('请输入配置名称');
+                    return;
+                }
+                
+                this.savedConfigs[name] = {
+                    url: url,
+                    coordinate: coordinate,
+                    timestamp: new Date().toISOString()
+                };
+                
+                localStorage.setItem('meituanConfigs', JSON.stringify(this.savedConfigs));
+                this.closeSaveConfigModal();
+                alert(`配置 "${name}" 保存成功！`);
+            }
+            
+            showSelectConfigModal() {
+                const configList = document.getElementById('configList');
+                configList.innerHTML = '';
+                
+                Object.keys(this.savedConfigs).forEach(name => {
+                    const configItem = document.createElement('div');
+                    configItem.className = 'config-item';
+                    configItem.innerHTML = `
+                        <span>${name}</span>
+                        <span>${new Date(this.savedConfigs[name].timestamp).toLocaleDateString()}</span>
+                    `;
+                    configItem.addEventListener('click', () => this.selectConfig(name));
+                    configList.appendChild(configItem);
                 });
                 
-                localStorage.setItem('meituan_accounts', JSON.stringify(accounts));
-                updateQuickButtons();
-                hideDeleteModal();
-                showResult(`✅ 已删除 ${deletedNames.length} 个账号`, 'success');
+                document.getElementById('selectConfigModal').style.display = 'block';
             }
-        }
-
-        function saveAccount() {
-            const name = document.getElementById('accountName').value.trim();
-            const url = document.getElementById('accountUrl').value.trim();
             
-            if (!name || !url) {
-                alert('请填写账号名称和URL');
-                return;
+            closeSelectConfigModal() {
+                document.getElementById('selectConfigModal').style.display = 'none';
             }
-
-            // 检查是否已存在相同名称
-            if (accounts.find(acc => acc.name === name)) {
-                alert('该账号名称已存在，请使用其他名称');
-                return;
+            
+            selectConfig(name) {
+                const config = this.savedConfigs[name];
+                document.getElementById('urlInput').value = config.url;
+                document.getElementById('coordinateInput').value = config.coordinate;
+                this.currentConfig = name;
+                this.closeSelectConfigModal();
             }
-
-            // 添加到账号列表
-            accounts.push({ name, url });
-            localStorage.setItem('meituan_accounts', JSON.stringify(accounts));
             
-            // 更新界面
-            updateQuickButtons();
-            hideAddModal();
-            showResult(`✅ 已保存账号: ${name}`, 'success');
-        }
-
-        function updateQuickButtons() {
-            const container = document.getElementById('quickButtons');
-            container.innerHTML = '';
-            
-            accounts.forEach((account, index) => {
-                const button = document.createElement('button');
-                button.className = 'quick-btn';
-                button.innerHTML = `👤 ${account.name}`;
-                button.onclick = () => quickQuery(account.url, account.name);
-                container.appendChild(button);
-            });
-        }
-
-        function quickQuery(url, name) {
-            document.getElementById('urlInput').value = url;
-            showResult(`🔍 正在查询 ${name}...`, 'loading');
-            queryOrders();
-        }
-
-        async function batchQueryAll() {
-            if (accounts.length === 0) {
-                showResult('❌ 请先添加账号', 'error');
-                return;
+            useCustomConfig() {
+                this.currentConfig = 'custom';
+                this.closeSelectConfigModal();
             }
-
-            const batchBtn = document.getElementById('batchBtn');
-            batchBtn.disabled = true;
-            batchBtn.textContent = '批量查询中...';
             
-            const resultsContainer = document.getElementById('batchResults');
-            resultsContainer.innerHTML = '<div class="batch-progress">开始批量查询...</div>';
+            clearUrl() {
+                document.getElementById('urlInput').value = '';
+            }
             
-            let completed = 0;
-            const total = accounts.length;
+            clearCoordinate() {
+                document.getElementById('coordinateInput').value = '';
+            }
             
-            // 清空单个查询结果
-            document.getElementById('records').innerHTML = '';
-            document.getElementById('result').innerHTML = '';
+            showDeleteConfigModal() {
+                this.updateDeleteConfigList();
+                document.getElementById('deleteConfigModal').style.display = 'block';
+            }
             
-            for (let i = 0; i < accounts.length; i++) {
-                const account = accounts[i];
-                const progress = `(${completed + 1}/${total})`;
+            closeDeleteConfigModal() {
+                document.getElementById('deleteConfigModal').style.display = 'none';
+            }
+            
+            updateDeleteConfigList() {
+                const deleteConfigList = document.getElementById('deleteConfigList');
+                deleteConfigList.innerHTML = '';
                 
-                const progressDiv = resultsContainer.querySelector('.batch-progress');
-                if (progressDiv) {
-                    progressDiv.textContent = `查询进度: ${progress} - ${account.name}`;
+                Object.keys(this.savedConfigs).forEach(name => {
+                    const configItem = document.createElement('div');
+                    configItem.className = 'config-item';
+                    configItem.innerHTML = `
+                        <span>${name}</span>
+                        <div class="config-actions">
+                            <button class="btn btn-delete small-btn" data-name="${name}">删除</button>
+                        </div>
+                    `;
+                    deleteConfigList.appendChild(configItem);
+                });
+                
+                // 添加删除按钮事件
+                deleteConfigList.querySelectorAll('.btn-delete').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const name = btn.getAttribute('data-name');
+                        this.deleteConfig(name);
+                    });
+                });
+            }
+            
+            deleteConfig(name) {
+                if (confirm(`确定要删除配置 "${name}" 吗？`)) {
+                    delete this.savedConfigs[name];
+                    localStorage.setItem('meituanConfigs', JSON.stringify(this.savedConfigs));
+                    this.updateDeleteConfigList();
+                    if (this.currentConfig === name) {
+                        this.currentConfig = 'custom';
+                    }
+                }
+            }
+            
+            async startParsing() {
+                const url = document.getElementById('urlInput').value.trim();
+                const coordinate = document.getElementById('coordinateInput').value.trim();
+                
+                if (!url) {
+                    alert('请输入包含token的URL');
+                    return;
+                }
+                
+                if (!coordinate) {
+                    alert('请输入经纬度');
+                    return;
+                }
+                
+                // 解析经纬度
+                const [longitude, latitude] = this.parseCoordinate(coordinate);
+                if (!longitude || !latitude) {
+                    alert('经纬度格式错误，请使用"经度,纬度"格式');
+                    return;
+                }
+
+                const token = this.extractTokenFromUrl(url);
+                if (!token) {
+                    alert('无法从URL中提取token，请检查URL格式');
+                    return;
+                }
+                
+                // 清空之前的查询结果
+                this.clearPreviousResults();
+                
+                this.shouldStop = false;
+                this.showLoading(true);
+                document.getElementById('startBtn').disabled = true;
+                document.getElementById('stopBtn').disabled = false;
+                document.getElementById('progressBar').classList.remove('hidden');
+                
+                try {
+                    await this.parseAllPages(token, longitude, latitude);
+                } catch (error) {
+                    console.error('解析失败:', error);
+                    alert('解析失败: ' + error.message);
+                } finally {
+                    this.showLoading(false);
+                    document.getElementById('startBtn').disabled = false;
+                    document.getElementById('stopBtn').disabled = true;
+                    document.getElementById('progressBar').classList.add('hidden');
+                }
+            }
+            
+            // 清空之前的查询结果
+            clearPreviousResults() {
+                this.allShops = [];
+                this.currentPage = 0;
+                this.foundPages = 0;
+                this.updateStats();
+                this.displayShops();
+                document.getElementById('progressFill').style.width = '0%';
+                document.getElementById('searchInput').value = '';
+            }
+            
+            stopParsing() {
+                this.shouldStop = true;
+                document.getElementById('stopBtn').disabled = true;
+                document.getElementById('startBtn').disabled = false;
+            }
+            
+            parseCoordinate(coordinate) {
+                const parts = coordinate.split(',');
+                if (parts.length !== 2) return [null, null];
+                
+                const longitude = parseFloat(parts[0].trim());
+                const latitude = parseFloat(parts[1].trim());
+                
+                if (isNaN(longitude) || isNaN(latitude)) return [null, null];
+                
+                return [longitude, latitude];
+            }
+            
+            extractTokenFromUrl(url) {
+                const tokenMatch = url.match(/token=([A-Za-z0-9_-]+)/);
+                return tokenMatch ? tokenMatch[1] : null;
+            }
+            
+            async parseAllPages(token, longitude, latitude) {
+                let page = 0;
+                let hasMorePages = true;
+                
+                while (hasMorePages && page < 50 && !this.shouldStop) {
+                    this.currentPage = page;
+                    this.updateProgress(page);
+                    
+                    const shops = await this.fetchPage(token, longitude, latitude, page);
+                    
+                    if (shops && shops.length > 0) {
+                        this.allShops.push(...shops);
+                        this.foundPages = page + 1;
+                        this.updateStats();
+                        this.displayShops();
+                        page++;
+                    } else {
+                        hasMorePages = false;
+                    }
+                    
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+            }
+            
+            updateProgress(page) {
+                const progress = Math.min((page / 50) * 100, 100);
+                document.getElementById('progressFill').style.width = `${progress}%`;
+                document.getElementById('loadingStatus').textContent = `正在查询第 ${page} 页`;
+            }
+            
+            async fetchPage(token, longitude, latitude, pageNum) {
+                const wmLongitude = Math.round(parseFloat(longitude) * 1000000);
+                const wmLatitude = Math.round(parseFloat(latitude) * 1000000);
+                
+                // 12个请求参数
+                const params = {
+                    'wm_logintoken': token,
+                    'wm_longitude': wmLongitude.toString(),
+                    'wm_latitude': wmLatitude.toString(),
+                    'wm_appversion': '9.86.2',
+                    'scene_id': '344',
+                    'page_num': pageNum.toString(),
+                    'page_size': '10',
+                    'wm_ctype': 'wxapp',
+                    // 空值参数
+                    'wm_uuid': '',
+                    'wm_visitid': '',
+                    'wm_dtype': '',
+                    'ctype': ''
+                };
+                
+                const formData = new URLSearchParams();
+                for (const [key, value] of Object.entries(params)) {
+                    formData.append(key, value);
                 }
                 
                 try {
-                    const urlParams = parseUrlParams(account.url);
-                    const params = generateParams(urlParams);
-                    const response = await sendRequest(params);
+                    const response = await fetch('https://adapi.waimai.meituan.com/api/ad/landingPage', {
+                        method: 'POST',
+                        headers: {
+                            'Host': 'adapi.waimai.meituan.com',
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'Origin': 'https://adfec.meituan.com',
+                            'Accept': 'application/json, text/plain, */*',
+                            'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 15_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 MicroMessenger/8.0.61(0x18003d39) NetType/WIFI Language/zh_CN miniProgram/wx2c348cf579062e56',
+                            'Referer': 'https://adfec.meituan.com/',
+                            'Accept-Language': 'zh-CN,zh-Hans;q=0.9'
+                        },
+                        body: formData
+                    });
                     
-                    // 显示单个账号结果
-                    displayAccountResults(account.name, response.records, resultsContainer);
-                    completed++;
+                    if (!response.ok) {
+                        throw new Error(`HTTP错误: ${response.status}`);
+                    }
                     
+                    const data = await response.json();
+                    
+                    if (data.code === 0) {
+                        return this.extractShopsFromResponse(data);
+                    } else {
+                        return [];
+                    }
                 } catch (error) {
-                    // 显示错误结果
-                    displayAccountError(account.name, error.message, resultsContainer);
-                    completed++;
-                }
-                
-                // 更新进度
-                const progressDivUpdate = resultsContainer.querySelector('.batch-progress');
-                if (progressDivUpdate) {
-                    progressDivUpdate.textContent = `查询进度: ${completed}/${total} - 已完成`;
+                    return [];
                 }
             }
             
-            // 完成批量查询
-            batchBtn.disabled = false;
-            batchBtn.textContent = '🚀 一键查询全部';
-            
-            const progressDivFinal = resultsContainer.querySelector('.batch-progress');
-            if (progressDivFinal) {
-                progressDivFinal.textContent = `✅ 批量查询完成 (${completed}/${total} 个账号)`;
-                progressDivFinal.style.background = '#e8f5e8';
-                progressDivFinal.style.color = '#2e7d32';
+            extractShopsFromResponse(data) {
+                const shops = [];
+                const moduleList = data.data?.module_list || [];
+                
+                moduleList.forEach(module => {
+                    try {
+                        const stringData = module.string_data;
+                        if (stringData) {
+                            const moduleData = JSON.parse(stringData);
+                            const adDataStr = moduleData.ad_data;
+                            if (adDataStr) {
+                                const adData = JSON.parse(adDataStr);
+                                const shopName = adData.poi_name;
+                                
+                                if (shopName) {
+                                    // 查找店铺链接
+                                    const shopLinks = this.findShopLinks(adData);
+                                    
+                                    shopLinks.forEach(link => {
+                                        shops.push({
+                                            name: shopName,
+                                            fullLink: link,
+                                            distance: adData.distance || '',
+                                            deliveryTime: adData.avg_delivery_time || ''
+                                        });
+                                    });
+                                }
+                            }
+                        }
+                    } catch (e) {
+                        console.error('解析店铺数据失败:', e);
+                    }
+                });
+                
+                return shops;
             }
-        }
-
-        function displayAccountResults(accountName, records, container) {
-            const accountDiv = document.createElement('div');
-            accountDiv.className = 'account-records';
             
-            let totalAmount = 0;
-            let unpaidCount = 0;
-            
-            records.forEach(record => {
-                totalAmount += (record.awardPrice || 0) / 100;
-                if (record.status !== 2) unpaidCount++;
-            });
-            
-            accountDiv.innerHTML = `
-                <div class="account-header">
-                    <div class="account-name">👤 ${accountName}</div>
-                    <div class="account-stats">
-                        <span>${records.length}条</span>
-                        <span>¥${totalAmount.toFixed(2)}</span>
-                    </div>
-                </div>
-                ${records.length === 0 ? 
-                    '<div class="empty-state"><div class="icon">📭</div><div>未找到免单记录</div></div>' :
-                    `
-                    <div class="records-scroll">
-                        ${records.map(record => {
-                            const amount = (record.awardPrice || 0) / 100;
-                            const timestamp = (record.ctime || 0) / 1000;
-                            const date = new Date(timestamp * 1000);
-                            const status = record.status === 2 ? '已打款' : '未打款';
-                            const dateStr = `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
-                            
-                            return `
-                                <div class="record">
-                                    <div class="record-header">
-                                        <div class="amount">¥${amount.toFixed(2)}</div>
-                                        <div class="status status-${status === '已打款' ? 'paid' : 'unpaid'}">${status}</div>
-                                    </div>
-                                    <div class="record-time">${dateStr}</div>
-                                </div>
-                            `;
-                        }).join('')}
-                    </div>
-                    `
+            // 查找符合格式的店铺链接
+            findShopLinks(adData) {
+                const links = [];
+                const linkPattern = /https:\/\/wxapp\/packages\/restaurant\/restaurant\/restaurant\?poi_id=-100&allowance_alliance_scenes=[^&]+&poi_id_str=[^&]+/g;
+                
+                // 检查scheme字段
+                if (adData.scheme) {
+                    const matches = adData.scheme.match(linkPattern);
+                    if (matches) {
+                        links.push(...matches);
+                    }
                 }
-                ${records.length > 0 ? `
-                    <div class="stats">
-                        <div>💰 总金额</div>
-                        <div class="total-amount">¥${totalAmount.toFixed(2)}</div>
-                        <div>⏳ 待打款: ${unpaidCount}笔</div>
-                    </div>
-                ` : ''}
-            `;
-            
-            container.appendChild(accountDiv);
-        }
-
-        function displayAccountError(accountName, error, container) {
-            const accountDiv = document.createElement('div');
-            accountDiv.className = 'account-records';
-            accountDiv.innerHTML = `
-                <div class="account-header">
-                    <div class="account-name">👤 ${accountName}</div>
-                    <div class="account-stats" style="color: #dc3545;">查询失败</div>
-                </div>
-                <div class="result error">❌ ${error}</div>
-            `;
-            container.appendChild(accountDiv);
-        }
-
-        // 原有的查询函数保持不变
-        async function queryOrders() {
-            const url = document.getElementById('urlInput').value;
-            const btn = document.getElementById('queryBtn');
-            const resultDiv = document.getElementById('result');
-            const recordsDiv = document.getElementById('records');
-            
-            if (!url) {
-                showResult('请输入美团免单页面URL', 'error');
-                return;
-            }
-
-            btn.disabled = true;
-            btn.textContent = '查询中...';
-            showResult('正在发送请求...', 'loading');
-            recordsDiv.innerHTML = '';
-
-            try {
-                const urlParams = parseUrlParams(url);
-                const params = generateParams(urlParams);
-                const response = await sendRequest(params);
                 
-                if (response.success) {
-                    showResult(`✅ ${response.message}`, 'success');
-                    displayRecords(response.records);
-                } else {
-                    showResult(`❌ ${response.message}`, 'error');
+                // 检查sku_list中的scheme
+                if (adData.sku_list && Array.isArray(adData.sku_list)) {
+                    adData.sku_list.forEach(sku => {
+                        if (sku.scheme) {
+                            const matches = sku.scheme.match(linkPattern);
+                            if (matches) {
+                                links.push(...matches);
+                            }
+                        }
+                    });
                 }
-            } catch (error) {
-                showResult(`❌ 请求失败: ${error.message}`, 'error');
-            } finally {
-                btn.disabled = false;
-                btn.textContent = '查询免单记录';
+                
+                return [...new Set(links)]; // 去重
             }
-        }
-
-        function displayRecords(records) {
-            const recordsDiv = document.getElementById('records');
             
-            if (records.length === 0) {
-                recordsDiv.innerHTML = `
-                    <div class="empty-state">
-                        <div class="icon">📭</div>
-                        <div>未找到免单记录</div>
-                    </div>
-                `;
-                return;
-            }
-
-            let html = `
-                <div class="records-header">
-                    <h3>📋 免单记录</h3>
-                    <div class="record-count">${records.length}条</div>
-                </div>
-                <div class="records-scroll">
-            `;
-            
-            records.sort((a, b) => (b.ctime || 0) - (a.ctime || 0));
-            
-            let totalAmount = 0;
-            let unpaidCount = 0;
-            
-            records.forEach((record) => {
-                const amount = (record.awardPrice || 0) / 100;
-                const timestamp = (record.ctime || 0) / 1000;
-                const date = new Date(timestamp * 1000);
-                const status = record.status === 2 ? '已打款' : '未打款';
+            displayShops() {
+                const shopList = document.getElementById('shopList');
+                const searchTerm = document.getElementById('searchInput').value.toLowerCase();
                 
-                totalAmount += amount;
-                if (status === '未打款') unpaidCount++;
+                let filteredShops = this.allShops;
+                if (searchTerm) {
+                    filteredShops = this.allShops.filter(shop => 
+                        shop.name.toLowerCase().includes(searchTerm)
+                    );
+                }
                 
-                const dateStr = `${date.getFullYear()}-${(date.getMonth()+1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+                if (filteredShops.length === 0) {
+                    shopList.innerHTML = '<div class="loading"><p>没有找到店铺</p></div>';
+                    return;
+                }
                 
-                html += `
-                    <div class="record">
-                        <div class="record-header">
-                            <div class="amount">¥${amount.toFixed(2)}</div>
-                            <div class="status status-${status === '已打款' ? 'paid' : 'unpaid'}">${status}</div>
+                shopList.innerHTML = filteredShops.map((shop, index) => `
+                    <div class="shop-card" onclick="parser.showShopLink('${this.escapeHtml(shop.name)}', '${this.escapeHtml(shop.fullLink)}')">
+                        <div class="shop-name">${this.escapeHtml(shop.name)}</div>
+                        <div class="shop-info">
+                            ${shop.distance ? `距离: ${shop.distance}` : ''}
+                            ${shop.deliveryTime ? ` | 配送: ${shop.deliveryTime}分钟` : ''}
                         </div>
-                        <div class="record-time">${dateStr}</div>
                     </div>
-                `;
-            });
-
-            html += `</div>
-                <div class="stats">
-                    <div>💰 总金额</div>
-                    <div class="total-amount">¥${totalAmount.toFixed(2)}</div>
-                    <div>⏳ 待打款: ${unpaidCount}笔</div>
-                </div>
-            `;
-
-            recordsDiv.innerHTML = html;
-        }
-
-        function showResult(message, type) {
-            const resultDiv = document.getElementById('result');
-            resultDiv.innerHTML = message;
-            resultDiv.className = `result ${type}`;
-        }
-
-        // 原有的解析URL、生成参数、发送请求等函数保持不变
-        function parseUrlParams(url) {
-            try {
-                const urlObj = new URL(url);
-                const params = new URLSearchParams(urlObj.search);
-                const userid = params.get('userId') || params.get('userid') || '3305650384';
-                const token = params.get('token') || params.get('userToken');
-                if (!token) throw new Error('无法从URL中解析出token');
-                return { userid, token };
-            } catch (e) {
-                throw new Error('URL格式错误，请检查URL是否正确');
+                `).join('');
             }
-        }
-
-        function generateParams(urlParams) {
-            const dynamicParams = {
-                platform: '3', version: '12.45.210', wm_appversion: '12.45.210',
-                wm_ctype: 'mtandroid', wm_dtype: 'RMX5010', wm_did: generateUUID(),
-                wm_visitid: generateUUID() + Date.now(), wm_uuid: generateUUID(),
-                uuid: generateUUID(), msid: generateUUID() + Date.now(),
-                mt_back_rci: '410300', wm_longitude: (112454000 + Math.floor(Math.random() * 10000)).toString(),
-                wm_latitude: (34619000 + Math.floor(Math.random() * 5000)).toString(),
-                scene_id: '179', page_num: '1', page_size: '10',
-            };
-            return {
-                ...dynamicParams,
-                userid: urlParams.userid, token: urlParams.token, wm_logintoken: urlParams.token,
-                wm_context: '', entry: 'tiantianmiandan', entry_channel: '2',
-            };
-        }
-
-        function generateUUID() {
-            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-                const r = Math.random() * 16 | 0;
-                const v = c == 'x' ? r : (r & 0x3 | 0x8);
-                return v.toString(16);
-            }).toUpperCase();
-        }
-
-        async function sendRequest(params) {
-            const formData = new URLSearchParams();
-            for (const [key, value] of Object.entries(params)) {
-                formData.append(key, value);
-            }
-
-            const response = await fetch('https://adapi.waimai.meituan.com/api/ad/landingPage', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'Origin': 'https://adfec.meituan.com',
-                    'Referer': 'https://adfec.meituan.com/',
-                    'User-Agent': 'Mozilla/5.0 (Linux; Android 13; RMX5010) AppleWebKit/537.36',
-                    'Accept': 'application/json, text/plain, */*',
-                    'Accept-Language': 'zh-CN,zh-Hans;q=0.9'
-                },
-                body: formData
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP错误: ${response.status}`);
-            }
-
-            const data = await response.json();
             
-            if (data.code !== 0) {
-                throw new Error(`API错误: ${data.code} - ${data.msg}`);
+            showShopLink(shopName, fullLink) {
+                document.getElementById('modalShopName').textContent = shopName;
+                document.getElementById('modalLink').textContent = fullLink;
+                document.getElementById('linkModal').style.display = 'block';
             }
-
-            const records = extractRecords(data);
             
-            return {
-                success: true,
-                message: `成功找到${records.length}条免单记录`,
-                records: records
-            };
-        }
-
-        function extractRecords(data) {
-            try {
-                const moduleActivityList = data.data?.module_activity_list || {};
-                if (moduleActivityList.string_data) {
-                    const activityData = JSON.parse(moduleActivityList.string_data);
-                    return activityData.freeOrderRecord || [];
+            closeModal() {
+                document.getElementById('linkModal').style.display = 'none';
+            }
+            
+            async copyLink() {
+                const link = document.getElementById('modalLink').textContent;
+                try {
+                    await navigator.clipboard.writeText(link);
+                    alert('链接已复制到剪贴板！');
+                } catch (err) {
+                    const textArea = document.createElement('textarea');
+                    textArea.value = link;
+                    document.body.appendChild(textArea);
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    alert('链接已复制到剪贴板！');
                 }
-            } catch (e) {
-                console.error('解析记录失败:', e);
             }
-            return [];
+            
+            filterShops(searchTerm) {
+                this.displayShops();
+            }
+            
+            updateStats() {
+                document.getElementById('totalShops').textContent = this.allShops.length;
+                document.getElementById('currentPage').textContent = this.currentPage;
+                document.getElementById('foundPages').textContent = this.foundPages;
+            }
+            
+            showLoading(show) {
+                document.getElementById('loadingIndicator').classList.toggle('hidden', !show);
+                if (!show) {
+                    document.getElementById('shopList').classList.remove('hidden');
+                }
+            }
+            
+            escapeHtml(unsafe) {
+                return unsafe
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
         }
-
-        // 按回车键也可以查询
-        document.getElementById('urlInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                queryOrders();
-            }
-        });
-
-        // 自动聚焦输入框
-        document.getElementById('urlInput').focus();
+        
+        // 初始化解析器
+        const parser = new MeituanParser();
     </script>
 </body>
 </html>
