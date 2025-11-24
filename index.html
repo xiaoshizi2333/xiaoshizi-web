@@ -317,20 +317,6 @@
             display: none;
         }
         
-        .progress {
-            margin: 15px 0;
-            background: #e9ecef;
-            border-radius: 10px;
-            height: 10px;
-            overflow: hidden;
-        }
-        
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            transition: width 0.3s;
-        }
-        
         .config-list {
             max-height: 200px;
             overflow-y: auto;
@@ -438,7 +424,7 @@
             <div class="input-group">
                 <label for="urlInput">🔗 美团URL（包含Token）</label>
                 <div class="input-row">
-                    <input type="text" id="urlInput" placeholder="粘贴包含token的URL，例如：https://i.meituan.com/...?token=xxx">
+                    <input type="text" id="urlInput" placeholder="例如：https://i.meituan.com/...?token=xxx">
                     <button class="btn" id="addConfigBtn">➕ 保存</button>
                     <button class="btn" id="selectConfigBtn">📁 选择配置</button>
                     <button class="btn btn-clear" id="clearUrlBtn">🗑️ 清除</button>
@@ -457,10 +443,6 @@
             <div>
                 <button class="btn" id="startBtn">🚀 开始解析店铺</button>
                 <button class="btn btn-stop" id="stopBtn" disabled>⏹️ 停止解析</button>
-            </div>
-            
-            <div class="progress hidden" id="progressBar">
-                <div class="progress-bar" id="progressFill" style="width: 0%"></div>
             </div>
         </div>
         
@@ -481,7 +463,7 @@
                     <div class="stat-label">当前页码</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-number" id="foundPages">0</div>
+                    <div class="stat-number" id="foundPages">1</div>
                     <div class="stat-label">已发现页数</div>
                 </div>
             </div>
@@ -490,7 +472,7 @@
                 <div class="loading hidden" id="loadingIndicator">
                     <div class="spinner"></div>
                     <p>正在解析店铺数据...</p>
-                    <p id="loadingStatus">正在查询第 0 页</p>
+                    <p id="loadingStatus">正在查询店铺数据</p>
                 </div>
                 
                 <div id="shopList" class="shop-grid"></div>
@@ -558,7 +540,7 @@
             constructor() {
                 this.allShops = [];
                 this.currentPage = 0;
-                this.foundPages = 0;
+                this.foundPages = 1;
                 this.isLoading = false;
                 this.shouldStop = false;
                 this.savedConfigs = JSON.parse(localStorage.getItem('meituanConfigs') || '{}');
@@ -766,7 +748,6 @@
                 this.showLoading(true);
                 document.getElementById('startBtn').disabled = true;
                 document.getElementById('stopBtn').disabled = false;
-                document.getElementById('progressBar').classList.remove('hidden');
                 
                 try {
                     await this.parseAllPages(token, longitude, latitude);
@@ -777,7 +758,6 @@
                     this.showLoading(false);
                     document.getElementById('startBtn').disabled = false;
                     document.getElementById('stopBtn').disabled = true;
-                    document.getElementById('progressBar').classList.add('hidden');
                 }
             }
             
@@ -785,10 +765,9 @@
             clearPreviousResults() {
                 this.allShops = [];
                 this.currentPage = 0;
-                this.foundPages = 0;
+                this.foundPages = 1;
                 this.updateStats();
                 this.displayShops();
-                document.getElementById('progressFill').style.width = '0%';
                 document.getElementById('searchInput').value = '';
             }
             
@@ -816,33 +795,24 @@
             }
             
             async parseAllPages(token, longitude, latitude) {
-                let page = 0;
-                let hasMorePages = true;
+                this.currentPage = 0;
+                document.getElementById('loadingStatus').textContent = `正在查询店铺数据`;
                 
-                while (hasMorePages && page < 50 && !this.shouldStop) {
-                    this.currentPage = page;
-                    this.updateProgress(page);
-                    
-                    const shops = await this.fetchPage(token, longitude, latitude, page);
-                    
-                    if (shops && shops.length > 0) {
-                        this.allShops.push(...shops);
-                        this.foundPages = page + 1;
-                        this.updateStats();
-                        this.displayShops();
-                        page++;
-                    } else {
-                        hasMorePages = false;
-                    }
-                    
-                    await new Promise(resolve => setTimeout(resolve, 500));
+                console.log(`正在请求店铺数据，每页显示50条`);
+                
+                const shops = await this.fetchPage(token, longitude, latitude, 0);
+                
+                console.log(`返回店铺数量:`, shops ? shops.length : 0);
+                
+                if (shops && shops.length > 0) {
+                    this.allShops.push(...shops);
+                    this.foundPages = 1;
+                    this.updateStats();
+                    this.displayShops();
+                    console.log(`成功获取 ${shops.length} 个店铺`);
+                } else {
+                    console.log(`没有获取到店铺数据`);
                 }
-            }
-            
-            updateProgress(page) {
-                const progress = Math.min((page / 50) * 100, 100);
-                document.getElementById('progressFill').style.width = `${progress}%`;
-                document.getElementById('loadingStatus').textContent = `正在查询第 ${page} 页`;
             }
             
             async fetchPage(token, longitude, latitude, pageNum) {
@@ -856,8 +826,8 @@
                     'wm_latitude': wmLatitude.toString(),
                     'wm_appversion': '9.86.2',
                     'scene_id': '344',
-                    'page_num': pageNum.toString(),
-                    'page_size': '10',
+                    'page_num': '0',
+                    'page_size': '50', // 改为每页50条
                     'wm_ctype': 'wxapp',
                     // 空值参数
                     'wm_uuid': '',
@@ -898,6 +868,7 @@
                         return [];
                     }
                 } catch (error) {
+                    console.error(`请求失败:`, error);
                     return [];
                 }
             }
